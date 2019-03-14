@@ -24,5 +24,3 @@ RUN dnf clean all
 VOLUME [ "/sys/fs/cgroup" ]
 EXPOSE 8080
 CMD ["/usr/sbin/init"]
-
-CMD ["/usr/bin/init"]
