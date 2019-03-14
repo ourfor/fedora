@@ -18,7 +18,7 @@ RUN dnf install -y tomcat tomcat-webapps tomcat-admin-webapps;systemctl enable t
 RUN dnf -y install mariadb-server mariadb;systemctl enable mariadb.service;
 RUN dnf install -y net-tools openssh-server openssh-clients passwd;
 RUN dnf install -y zsh wget git vim;
-RUN curl -fsSL https://raw.github.com/ourfor/Configuration/master/zsh/install.sh;
+RUN curl -fsSL https://raw.github.com/ourfor/Configuration/master/zsh/install.sh|sh;
 RUN dnf clean all
 
 VOLUME [ "/sys/fs/cgroup" ]
