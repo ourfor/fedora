@@ -17,7 +17,7 @@ RUN dnf install -y tomcat;systemctl enable tomcat.service;
 RUN dnf install -y tomcat tomcat-webapps tomcat-admin-webapps;systemctl enable tomcat.service;
 RUN dnf -y install mariadb-server mariadb;systemctl enable mariadb.service;
 RUN dnf install -y net-tools openssh-server openssh-clients passwd;
-RUN dnf install -y zsh wget git vim;
+RUN dnf install -y zsh wget git vim neofetch;
 RUN curl -fsSL https://raw.github.com/ourfor/Configuration/master/zsh/install.sh|sh;
 RUN dnf clean all
 
