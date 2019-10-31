@@ -12,13 +12,22 @@ rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
 rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
-RUN dnf install -y tomcat;systemctl enable tomcat.service;
-RUN dnf install -y tomcat tomcat-webapps tomcat-admin-webapps;systemctl enable tomcat.service;
-RUN dnf install -y gcc wget git vim;
-ADD $PWD/mongodb-org-4.2.repo /etc/yum.repos.d/mongodb-org-4.2.repo
-RUN dnf install -y mongodb-org;systemctl enable mongod.service;
+ADD $PWD/mongodb-org.repo /etc/yum.repos.d/mongodb-org-4.2.repo
+RUN dnf install -y httpd tomcat mongodb-org;
+RUN sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+RUN mkdir -p /opt/app/findjob
+ADD $PWD/deploy/db /opt/app/findjob/db
+ADD $PWD/deploy/dist /var/www/findjob
+ADD $PWD/deploy/job.war /opt/app/findjob/job.war
+ADD $PWD/findjob.conf /etc/httpd/conf.d/findjob.conf
+ADD $PWD/init.service /usr/lib/systemd/system/init.service
+ADD $PWD/setup.sh /opt/app/findjob/setup.sh
+RUN systemctl enable tomcat;
+RUN systemctl enable httpd;
+RUN systemctl enable mongod;
+RUN systemctl enable init;
 RUN dnf clean all
 
 VOLUME [ "/sys/fs/cgroup" ]
-EXPOSE 8080
+EXPOSE 80
 CMD ["/usr/sbin/init"]
