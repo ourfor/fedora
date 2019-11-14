@@ -1,8 +1,7 @@
 FROM fedora:latest
-MAINTAINER ourfor@foxmail.com
-ENV UPDATE_DATE 2019-03-14
+MAINTAINER ourfor@qq.com
+ENV UPDATE_DATE 2019-11-13
 RUN dnf -y install systemd systemd-libs
-#RUN dnf -y update
 RUN dnf clean all; \
 (cd /lib/systemd/system/sysinit.target.wants/; for i in *; \
 do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -13,14 +12,15 @@ rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
 rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
-RUN dnf install -y tomcat;systemctl enable tomcat.service;
-RUN dnf install -y tomcat tomcat-webapps tomcat-admin-webapps;systemctl enable tomcat.service;
-RUN dnf -y install mariadb-server mariadb;systemctl enable mariadb.service;
-RUN dnf install -y net-tools openssh-server openssh-clients passwd;
-RUN dnf install -y zsh wget git vim neofetch;
-RUN curl -fsSL https://raw.github.com/ourfor/Configuration/master/zsh/install.sh|sh;
+RUN dnf install -y tomcat tomcat-webapps tomcat-admin-webapps;
+RUN sed -i 's/\/usr\/lib\/jvm\/jre/\/usr\/java\/jdk1.8.0_231-amd64/' /usr/share/tomcat/conf/tomcat.conf
+RUN curl --output /tmp/jdk-8u231-linux-x64.rpm http://cdn.ourfor.top/jdk-8u231-linux-x64.rpm
+RUN rpm -ivh /tmp/jdk-8u231-linux-x64.rpm
+RUN ls /usr/java
+RUN systemctl enable tomcat
 RUN dnf clean all
 
-VOLUME [ "/sys/fs/cgroup" ]
 EXPOSE 8080
+EXPOSE 8009
+VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
